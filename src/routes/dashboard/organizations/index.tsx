@@ -1,11 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { Container } from "@/components/Container";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/dashboard/organizations/")({ component: Organization });
+export const Route = createFileRoute("/dashboard/organizations/")({
+  component: () => (
+    <ProtectedRoute>
+      <Organization />
+    </ProtectedRoute>
+  )
+});
 
 function Organization() {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const createOrganization = () => {
     navigate({ to: '/dashboard/organizations/new' });
@@ -14,7 +24,16 @@ function Organization() {
   return (
     <Container>
       <section className="mt-10">
-        <h1 className="text-2xl font-bold text-blue-600">Create Organization</h1>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-blue-600">Create Organization</h1>
+            <p className="text-sm text-gray-600 mt-1">Logged in as: {user?.email}</p>
+          </div>
+          <Button variant="outline" onClick={signOut}>
+            Sign Out
+          </Button>
+        </div>
+
         <div className="border-gray-300 border w-full h-auto rounded-lg p-4 bg-violet-100 flex flex-col justify-center mt-2">
           <h2 className="text-violet-500 text-2xl font-bold">Warning</h2>
           <p className="text-gray-600">You can only create one organization per account.</p>
@@ -68,5 +87,3 @@ function Organization() {
     </Container>
   );
 };
-
-export default Organization;

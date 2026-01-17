@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as DashboardOrganizationsIndexRouteImport } from './routes/dashboard/organizations/index'
 import { Route as DashboardOrganizationsNewIndexRouteImport } from './routes/dashboard/organizations/new/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardOrganizationsIndexRoute =
@@ -33,34 +45,54 @@ const DashboardOrganizationsNewIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
   '/dashboard/organizations': typeof DashboardOrganizationsIndexRoute
   '/dashboard/organizations/new': typeof DashboardOrganizationsNewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
   '/dashboard/organizations': typeof DashboardOrganizationsIndexRoute
   '/dashboard/organizations/new': typeof DashboardOrganizationsNewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
   '/dashboard/organizations/': typeof DashboardOrganizationsIndexRoute
   '/dashboard/organizations/new/': typeof DashboardOrganizationsNewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard/organizations' | '/dashboard/organizations/new'
+  fullPaths:
+    | '/'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/dashboard/organizations'
+    | '/dashboard/organizations/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard/organizations' | '/dashboard/organizations/new'
+  to:
+    | '/'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/dashboard/organizations'
+    | '/dashboard/organizations/new'
   id:
     | '__root__'
     | '/'
+    | '/auth/callback'
+    | '/auth/login'
     | '/dashboard/organizations/'
     | '/dashboard/organizations/new/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthLoginRoute: typeof AuthLoginRoute
   DashboardOrganizationsIndexRoute: typeof DashboardOrganizationsIndexRoute
   DashboardOrganizationsNewIndexRoute: typeof DashboardOrganizationsNewIndexRoute
 }
@@ -72,6 +104,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/organizations/': {
@@ -93,6 +139,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthLoginRoute: AuthLoginRoute,
   DashboardOrganizationsIndexRoute: DashboardOrganizationsIndexRoute,
   DashboardOrganizationsNewIndexRoute: DashboardOrganizationsNewIndexRoute,
 }

@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
 import {
   Clock,
@@ -9,10 +8,15 @@ import {
   Users,
   Zap,
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/')({
-  component: App, loader: async () => {
-  }
+  component: App, loader: () => {
+    console.log('Loader executed')
+  },
+  beforeLoad: () => {
+    console.log('Before load executed')
+  },
 })
 
 function App() {
@@ -35,12 +39,12 @@ function App() {
             and efficient way to manage employee attendance using smartphones.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to='/'>
+            <Link to='/dashboard/organizations'>
               <Button size="lg" className="w-full sm:w-auto">
                 Начать бесплатно
               </Button>
             </Link>
-            <Link to="/dashboard/organizations">
+            <Link to="/auth/login">
               <Button
                 variant="secondary"
                 size="lg"
