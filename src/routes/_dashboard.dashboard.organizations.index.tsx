@@ -1,21 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { Container } from "@/components/Container";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/dashboard/organizations/")({
-  component: () => (
-    <ProtectedRoute>
-      <Organization />
-    </ProtectedRoute>
-  )
+export const Route = createFileRoute("/_dashboard/dashboard/organizations/")({
+  component: Organization
 });
 
 function Organization() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
 
   const createOrganization = () => {
     navigate({ to: '/dashboard/organizations/new' });
@@ -24,15 +16,7 @@ function Organization() {
   return (
     <Container>
       <section className="mt-10">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-blue-600">Create Organization</h1>
-            <p className="text-sm text-gray-600 mt-1">Logged in as: {user?.email}</p>
-          </div>
-          <Button variant="outline" onClick={signOut}>
-            Sign Out
-          </Button>
-        </div>
+        <h1 className="text-2xl font-bold text-blue-600">Create Organization</h1>
 
         <div className="border-gray-300 border w-full h-auto rounded-lg p-4 bg-violet-100 flex flex-col justify-center mt-2">
           <h2 className="text-violet-500 text-2xl font-bold">Warning</h2>
@@ -86,4 +70,4 @@ function Organization() {
       </section>
     </Container>
   );
-};
+}

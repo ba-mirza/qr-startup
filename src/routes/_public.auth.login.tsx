@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 
-export const Route = createFileRoute('/auth/login')({
+export const Route = createFileRoute('/_public/auth/login')({
   component: LoginPage,
 })
 

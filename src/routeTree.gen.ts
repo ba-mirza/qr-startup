@@ -9,61 +9,73 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
-import { Route as DashboardOrganizationsIndexRouteImport } from './routes/dashboard/organizations/index'
-import { Route as DashboardOrganizationsNewIndexRouteImport } from './routes/dashboard/organizations/new/index'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as PublicAuthLoginRouteImport } from './routes/_public.auth.login'
+import { Route as PublicAuthCallbackRouteImport } from './routes/_public.auth.callback'
+import { Route as DashboardDashboardOrganizationsIndexRouteImport } from './routes/_dashboard.dashboard.organizations.index'
+import { Route as DashboardDashboardOrganizationsNewRouteImport } from './routes/_dashboard.dashboard.organizations.new'
 
-const IndexRoute = IndexRouteImport.update({
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
+const PublicAuthLoginRoute = PublicAuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
+const PublicAuthCallbackRoute = PublicAuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
-const DashboardOrganizationsIndexRoute =
-  DashboardOrganizationsIndexRouteImport.update({
+const DashboardDashboardOrganizationsIndexRoute =
+  DashboardDashboardOrganizationsIndexRouteImport.update({
     id: '/dashboard/organizations/',
     path: '/dashboard/organizations/',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardOrganizationsNewIndexRoute =
-  DashboardOrganizationsNewIndexRouteImport.update({
-    id: '/dashboard/organizations/new/',
-    path: '/dashboard/organizations/new/',
-    getParentRoute: () => rootRouteImport,
+const DashboardDashboardOrganizationsNewRoute =
+  DashboardDashboardOrganizationsNewRouteImport.update({
+    id: '/dashboard/organizations/new',
+    path: '/dashboard/organizations/new',
+    getParentRoute: () => DashboardRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/dashboard/organizations': typeof DashboardOrganizationsIndexRoute
-  '/dashboard/organizations/new': typeof DashboardOrganizationsNewIndexRoute
+  '/': typeof PublicIndexRoute
+  '/auth/callback': typeof PublicAuthCallbackRoute
+  '/auth/login': typeof PublicAuthLoginRoute
+  '/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
+  '/dashboard/organizations': typeof DashboardDashboardOrganizationsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/dashboard/organizations': typeof DashboardOrganizationsIndexRoute
-  '/dashboard/organizations/new': typeof DashboardOrganizationsNewIndexRoute
+  '/': typeof PublicIndexRoute
+  '/auth/callback': typeof PublicAuthCallbackRoute
+  '/auth/login': typeof PublicAuthLoginRoute
+  '/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
+  '/dashboard/organizations': typeof DashboardDashboardOrganizationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/dashboard/organizations/': typeof DashboardOrganizationsIndexRoute
-  '/dashboard/organizations/new/': typeof DashboardOrganizationsNewIndexRoute
+  '/_dashboard': typeof DashboardRouteWithChildren
+  '/_public': typeof PublicRouteWithChildren
+  '/_public/': typeof PublicIndexRoute
+  '/_public/auth/callback': typeof PublicAuthCallbackRoute
+  '/_public/auth/login': typeof PublicAuthLoginRoute
+  '/_dashboard/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
+  '/_dashboard/dashboard/organizations/': typeof DashboardDashboardOrganizationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,78 +83,119 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/callback'
     | '/auth/login'
-    | '/dashboard/organizations'
     | '/dashboard/organizations/new'
+    | '/dashboard/organizations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/callback'
     | '/auth/login'
-    | '/dashboard/organizations'
     | '/dashboard/organizations/new'
+    | '/dashboard/organizations'
   id:
     | '__root__'
-    | '/'
-    | '/auth/callback'
-    | '/auth/login'
-    | '/dashboard/organizations/'
-    | '/dashboard/organizations/new/'
+    | '/_dashboard'
+    | '/_public'
+    | '/_public/'
+    | '/_public/auth/callback'
+    | '/_public/auth/login'
+    | '/_dashboard/dashboard/organizations/new'
+    | '/_dashboard/dashboard/organizations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthCallbackRoute: typeof AuthCallbackRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  DashboardOrganizationsIndexRoute: typeof DashboardOrganizationsIndexRoute
-  DashboardOrganizationsNewIndexRoute: typeof DashboardOrganizationsNewIndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  PublicRoute: typeof PublicRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/auth/login': {
-      id: '/auth/login'
+    '/_public/auth/login': {
+      id: '/_public/auth/login'
       path: '/auth/login'
       fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicAuthLoginRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/auth/callback': {
-      id: '/auth/callback'
+    '/_public/auth/callback': {
+      id: '/_public/auth/callback'
       path: '/auth/callback'
       fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicAuthCallbackRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/dashboard/organizations/': {
-      id: '/dashboard/organizations/'
+    '/_dashboard/dashboard/organizations/': {
+      id: '/_dashboard/dashboard/organizations/'
       path: '/dashboard/organizations'
       fullPath: '/dashboard/organizations'
-      preLoaderRoute: typeof DashboardOrganizationsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardDashboardOrganizationsIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/dashboard/organizations/new/': {
-      id: '/dashboard/organizations/new/'
+    '/_dashboard/dashboard/organizations/new': {
+      id: '/_dashboard/dashboard/organizations/new'
       path: '/dashboard/organizations/new'
       fullPath: '/dashboard/organizations/new'
-      preLoaderRoute: typeof DashboardOrganizationsNewIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardDashboardOrganizationsNewRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardDashboardOrganizationsNewRoute: typeof DashboardDashboardOrganizationsNewRoute
+  DashboardDashboardOrganizationsIndexRoute: typeof DashboardDashboardOrganizationsIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardDashboardOrganizationsNewRoute:
+    DashboardDashboardOrganizationsNewRoute,
+  DashboardDashboardOrganizationsIndexRoute:
+    DashboardDashboardOrganizationsIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
+interface PublicRouteChildren {
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicAuthCallbackRoute: typeof PublicAuthCallbackRoute
+  PublicAuthLoginRoute: typeof PublicAuthLoginRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicIndexRoute: PublicIndexRoute,
+  PublicAuthCallbackRoute: PublicAuthCallbackRoute,
+  PublicAuthLoginRoute: PublicAuthLoginRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthCallbackRoute: AuthCallbackRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  DashboardOrganizationsIndexRoute: DashboardOrganizationsIndexRoute,
-  DashboardOrganizationsNewIndexRoute: DashboardOrganizationsNewIndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  PublicRoute: PublicRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
