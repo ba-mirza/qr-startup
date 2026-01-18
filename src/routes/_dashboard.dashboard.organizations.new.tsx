@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeftIcon, Building2Icon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import type { OrganizationTypeValues } from '@/lib/supabase/actions/organizations/schema'
 import { Container } from '@/components/Container'
 import {
   Form,
@@ -16,41 +16,18 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { organizationSchema } from '@/lib/supabase/actions/organizations/schema'
+import { createOrganizationFn } from '@/lib/supabase/actions/organizations/fn'
 
 export const Route = createFileRoute('/_dashboard/dashboard/organizations/new')({
   component: CreateOrganizationPage,
 })
 
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: 'Organization name must be at least 2 characters.',
-  }),
-  bin: z.string().length(12, {
-    message: 'БИН must be exactly 12 digits.',
-  }).regex(/^\d+$/, {
-    message: 'БИН must contain only digits.',
-  }),
-  city: z.string().min(2, {
-    message: 'City must be at least 2 characters.',
-  }),
-  address: z.string().min(5, {
-    message: 'Address must be at least 5 characters.',
-  }),
-  employees: z.number().min(1, {
-    message: 'Number of employees must be at least 1.',
-  }),
-  description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.',
-  }),
-})
-
-type OrganizationValues = z.infer<typeof formSchema>
-
 function CreateOrganizationPage() {
   const navigate = useNavigate()
 
-  const form = useForm<OrganizationValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<OrganizationTypeValues>({
+    resolver: zodResolver(organizationSchema),
     defaultValues: {
       title: '',
       bin: '',
@@ -61,9 +38,8 @@ function CreateOrganizationPage() {
     },
   })
 
-  const onSubmit = async (values: OrganizationValues) => {
-    console.log(values)
-
+  const onSubmit = async (values: OrganizationTypeValues) => {
+    await createOrganizationFn({ data: values })
     await new Promise(resolve => setTimeout(resolve, 1500))
 
     navigate({ to: '/dashboard/organizations' })

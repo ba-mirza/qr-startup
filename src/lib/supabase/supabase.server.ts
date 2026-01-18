@@ -1,25 +1,53 @@
-import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr'
-import type { Database } from '@/model/database'
+import { createServerClient } from '@supabase/ssr';
+import { getCookies, setCookie } from '@tanstack/react-start/server'
+import type { Database } from '@/types/database.types';
 
-export function createSupabaseServerClient(request: Request) {
-  const headers = new Headers()
+const url = process.env.SUPABASE_URL
+const key = process.env.SUPABASE_ANON_KEY
 
-  const supabase = createServerClient<Database>(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY,
+export function getSupabaseServerClient() {
+  if (!url || !key) {
+    console.error('Missing env vars:', { url: !!url, key: !!key })
+    throw new Error('Supabase env variables are missing on server!')
+  }
+
+  return createServerClient<Database>(
+    url,
+    key,
     {
       cookies: {
         getAll() {
-          return parseCookieHeader(request.headers.get('Cookie') ?? '')
+          return Object.entries(getCookies()).map(([name, value]) => ({
+            name,
+            value,
+          }))
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            headers.append('Set-Cookie', serializeCookieHeader(name, value, options))
-          )
+        setAll(cookies) {
+          cookies.forEach((cookie) => {
+            setCookie(cookie.name, cookie.value)
+          })
         },
       },
-    }
-  )
+    });
+}
 
-  return { supabase, headers }
+export async function getSafeSession() {
+  const db = getSupabaseServerClient();
+
+  const {
+    data: { session },
+  } = await db.auth.getSession();
+  if (!session) {
+    return { session: null, user: null, supabase: null, error: 'No session found' };
+  }
+
+  const {
+    data: { user },
+    error: userError,
+  } = await db.auth.getUser();
+  if (userError) {
+    return { session, user: null, supabase: null, error: userError.message };
+  }
+
+  return { session, user, db, error: null };
 }

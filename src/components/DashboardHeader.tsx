@@ -29,17 +29,14 @@ export default function DashboardHeader() {
               <div className="bg-blue-600 p-1.5 rounded-lg">
                 <QrCode className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">
-                QR Tekser
-              </span>
             </Link>
 
             <nav className="hidden md:flex space-x-1">
               <Link
                 to="/dashboard/organizations"
-                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                className="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                 activeProps={{
-                  className: 'bg-gray-100 text-gray-900'
+                  className: 'text-blue-700 underline'
                 }}
               >
                 <div className="flex items-center space-x-2">
@@ -52,7 +49,7 @@ export default function DashboardHeader() {
 
           <div className="flex items-center">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild className='py-6'>
                 <Button variant="ghost" className="flex items-center space-x-2">
                   <div className="flex flex-col items-end">
                     <span className="text-sm font-medium text-gray-900">

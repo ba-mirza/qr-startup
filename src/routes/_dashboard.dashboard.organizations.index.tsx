@@ -3,7 +3,7 @@ import { PlusIcon } from "lucide-react";
 import { Container } from "@/components/Container";
 
 export const Route = createFileRoute("/_dashboard/dashboard/organizations/")({
-  component: Organization
+  component: Organization,
 });
 
 function Organization() {
