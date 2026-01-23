@@ -11,7 +11,7 @@ export function getSupabaseServerClient() {
     throw new Error('Supabase env variables are missing on server!')
   }
 
-  return createServerClient<Database>(
+  return createServerClient(
     url,
     key,
     {

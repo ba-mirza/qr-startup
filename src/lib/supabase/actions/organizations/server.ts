@@ -5,11 +5,10 @@ import { generateSlug } from '@/lib/slug'
 import { VARS } from '@/consts/varTimes'
 
 export async function createOrganizationInDB(input: OrganizationTypeValues) {
+  const { user, db } = await getSafeSession()
 
-  const { user, error, db } = await getSafeSession()
-
-  if (!user || !db) {
-    throw new Error(`Unauthorized: ${error}`)
+  if (!user) {
+    throw new Error('Unauthorized')
   }
 
   const { data: existingOwner } = await db
@@ -18,7 +17,7 @@ export async function createOrganizationInDB(input: OrganizationTypeValues) {
     .eq('auth_user_id', user.id)
     .single()
 
-  if (existingOwner) {
+  if (existingOwner?.organization_id) {
     throw new Error('You already have an organization')
   }
 
@@ -47,6 +46,7 @@ export async function createOrganizationInDB(input: OrganizationTypeValues) {
       industry: input.city,
       employee_count: input.employees,
       description: input.description,
+      created_by: user.id,
       settings: {
         geolocation_required: false,
         geolocation_radius: 50,
@@ -55,24 +55,20 @@ export async function createOrganizationInDB(input: OrganizationTypeValues) {
       },
       attendance_qr_token: generateAttendanceToken(user.id),
     })
-    .select()
+    .select('id, name, slug, attendance_qr_token')
     .single()
 
   if (orgError) throw new Error(orgError.message)
 
   const { error: ownerError } = await db
     .from('owners')
-    .insert({
-      organization_id: organization.id,
-      auth_user_id: user.id,
-      email: user.email!,
-      full_name: user.user_metadata?.full_name || user.email!.split('@')[0],
-    })
+    .update({ organization_id: organization.id })
+    .eq('auth_user_id', user.id)
 
   if (ownerError) throw new Error(ownerError.message)
 
   const registrationToken = generateRegistrationToken(organization.id)
-  const expiresAt = calculateQRExpiry(organization.settings!.work_end_time)
+  const expiresAt = calculateQRExpiry(VARS.WORK_END_TIME)
 
   const { error: qrError } = await db
     .from('registration_qr_codes')
