@@ -12,10 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as PublicAuthRegisterRouteImport } from './routes/_public.auth.register'
 import { Route as PublicAuthLoginRouteImport } from './routes/_public.auth.login'
 import { Route as PublicAuthCallbackRouteImport } from './routes/_public.auth.callback'
-import { Route as DashboardDashboardOrganizationsIndexRouteImport } from './routes/_dashboard.dashboard.organizations.index'
-import { Route as DashboardDashboardOrganizationsNewRouteImport } from './routes/_dashboard.dashboard.organizations.new'
+import { Route as DashboardDashboardOrganizationsIndexRouteImport } from './routes/_dashboard/dashboard.organizations.index'
+import { Route as DashboardDashboardOrganizationsNewRouteImport } from './routes/_dashboard/dashboard.organizations.new'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -28,6 +29,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicAuthRegisterRoute = PublicAuthRegisterRouteImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicAuthLoginRoute = PublicAuthLoginRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/auth/callback': typeof PublicAuthCallbackRoute
   '/auth/login': typeof PublicAuthLoginRoute
+  '/auth/register': typeof PublicAuthRegisterRoute
   '/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
   '/dashboard/organizations': typeof DashboardDashboardOrganizationsIndexRoute
 }
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/auth/callback': typeof PublicAuthCallbackRoute
   '/auth/login': typeof PublicAuthLoginRoute
+  '/auth/register': typeof PublicAuthRegisterRoute
   '/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
   '/dashboard/organizations': typeof DashboardDashboardOrganizationsIndexRoute
 }
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/_public/auth/callback': typeof PublicAuthCallbackRoute
   '/_public/auth/login': typeof PublicAuthLoginRoute
+  '/_public/auth/register': typeof PublicAuthRegisterRoute
   '/_dashboard/dashboard/organizations/new': typeof DashboardDashboardOrganizationsNewRoute
   '/_dashboard/dashboard/organizations/': typeof DashboardDashboardOrganizationsIndexRoute
 }
@@ -83,6 +92,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/callback'
     | '/auth/login'
+    | '/auth/register'
     | '/dashboard/organizations/new'
     | '/dashboard/organizations'
   fileRoutesByTo: FileRoutesByTo
@@ -90,6 +100,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/callback'
     | '/auth/login'
+    | '/auth/register'
     | '/dashboard/organizations/new'
     | '/dashboard/organizations'
   id:
@@ -99,6 +110,7 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/_public/auth/callback'
     | '/_public/auth/login'
+    | '/_public/auth/register'
     | '/_dashboard/dashboard/organizations/new'
     | '/_dashboard/dashboard/organizations/'
   fileRoutesById: FileRoutesById
@@ -129,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/auth/register': {
+      id: '/_public/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof PublicAuthRegisterRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/auth/login': {
@@ -182,12 +201,14 @@ interface PublicRouteChildren {
   PublicIndexRoute: typeof PublicIndexRoute
   PublicAuthCallbackRoute: typeof PublicAuthCallbackRoute
   PublicAuthLoginRoute: typeof PublicAuthLoginRoute
+  PublicAuthRegisterRoute: typeof PublicAuthRegisterRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicIndexRoute: PublicIndexRoute,
   PublicAuthCallbackRoute: PublicAuthCallbackRoute,
   PublicAuthLoginRoute: PublicAuthLoginRoute,
+  PublicAuthRegisterRoute: PublicAuthRegisterRoute,
 }
 
 const PublicRouteWithChildren =
@@ -202,10 +223,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

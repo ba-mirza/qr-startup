@@ -1,13 +1,8 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import DashboardHeader from '@/components/DashboardHeader'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
 
 export const Route = createFileRoute('/_dashboard')({
-  component: () => (
-    <ProtectedRoute>
-      <DashboardLayout />
-    </ProtectedRoute>
-  ),
+  component: DashboardLayout,
 })
 
 function DashboardLayout() {

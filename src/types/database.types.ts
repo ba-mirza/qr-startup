@@ -4,7 +4,7 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Array<Json>
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -14,69 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      attendance_logs: {
+      check_logs: {
         Row: {
           auto_closed: boolean | null
           created_at: string | null
-          distance_from_point: number | null
-          employee_id: string | null
+          employee_id: string
           id: string
-          latitude: number | null
           log_type: string
-          longitude: number | null
-          notes: string | null
-          organization_id: string | null
-          point_id: string | null
+          office_point_id: string
+          organization_id: string
           timestamp: string | null
         }
         Insert: {
           auto_closed?: boolean | null
           created_at?: string | null
-          distance_from_point?: number | null
-          employee_id?: string | null
+          employee_id: string
           id?: string
-          latitude?: number | null
           log_type: string
-          longitude?: number | null
-          notes?: string | null
-          organization_id?: string | null
-          point_id?: string | null
+          office_point_id: string
+          organization_id: string
           timestamp?: string | null
         }
         Update: {
           auto_closed?: boolean | null
           created_at?: string | null
-          distance_from_point?: number | null
-          employee_id?: string | null
+          employee_id?: string
           id?: string
-          latitude?: number | null
           log_type?: string
-          longitude?: number | null
-          notes?: string | null
-          organization_id?: string | null
-          point_id?: string | null
+          office_point_id?: string
+          organization_id?: string
           timestamp?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "attendance_logs_employee_id_fkey"
+            foreignKeyName: "check_logs_employee_id_fkey"
             columns: ["employee_id"]
             isOneToOne: false
             referencedRelation: "employees"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "attendance_logs_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: "check_logs_office_point_id_fkey"
+            columns: ["office_point_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "office_points"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "attendance_logs_point_id_fkey"
-            columns: ["point_id"]
+            foreignKeyName: "check_logs_organization_id_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
-            referencedRelation: "organization_addresses"
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -85,35 +73,32 @@ export type Database = {
         Row: {
           created_at: string | null
           device_fingerprint: string | null
-          email: string
+          email: string | null
           full_name: string
           id: string
           is_active: boolean | null
-          organization_id: string | null
+          organization_id: string
           phone: string | null
-          work_address_id: string | null
         }
         Insert: {
           created_at?: string | null
           device_fingerprint?: string | null
-          email: string
+          email?: string | null
           full_name: string
           id?: string
           is_active?: boolean | null
-          organization_id?: string | null
+          organization_id: string
           phone?: string | null
-          work_address_id?: string | null
         }
         Update: {
           created_at?: string | null
           device_fingerprint?: string | null
-          email?: string
+          email?: string | null
           full_name?: string
           id?: string
           is_active?: boolean | null
-          organization_id?: string | null
+          organization_id?: string
           phone?: string | null
-          work_address_id?: string | null
         }
         Relationships: [
           {
@@ -123,40 +108,45 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "employees_work_address_id_fkey"
-            columns: ["work_address_id"]
-            isOneToOne: false
-            referencedRelation: "organization_addresses"
-            referencedColumns: ["id"]
-          },
         ]
       }
-      organization_addresses: {
+      office_points: {
         Row: {
+          address: string | null
           created_at: string | null
+          geo_location: Json | null
           id: string
           is_active: boolean | null
+          is_main: boolean | null
           name: string
-          organization_id: string | null
+          organization_id: string
+          qr_token: string
         }
         Insert: {
+          address?: string | null
           created_at?: string | null
+          geo_location?: Json | null
           id?: string
           is_active?: boolean | null
+          is_main?: boolean | null
           name: string
-          organization_id?: string | null
+          organization_id: string
+          qr_token: string
         }
         Update: {
+          address?: string | null
           created_at?: string | null
+          geo_location?: Json | null
           id?: string
           is_active?: boolean | null
+          is_main?: boolean | null
           name?: string
-          organization_id?: string | null
+          organization_id?: string
+          qr_token?: string
         }
         Relationships: [
           {
-            foreignKeyName: "attendance_points_organization_id_fkey"
+            foreignKeyName: "office_points_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -166,116 +156,72 @@ export type Database = {
       }
       organizations: {
         Row: {
-          attendance_qr_token: string | null
+          bin: string
+          bin_verified: boolean | null
           created_at: string | null
-          description: string | null
-          employee_count: number | null
           id: string
-          industry: string | null
           name: string
           settings: Json | null
           slug: string
           updated_at: string | null
+          user_id: string
         }
         Insert: {
-          attendance_qr_token?: string | null
+          bin: string
+          bin_verified?: boolean | null
           created_at?: string | null
-          description?: string | null
-          employee_count?: number | null
           id?: string
-          industry?: string | null
           name: string
           settings?: Json | null
           slug: string
           updated_at?: string | null
+          user_id: string
         }
         Update: {
-          attendance_qr_token?: string | null
+          bin?: string
+          bin_verified?: boolean | null
           created_at?: string | null
-          description?: string | null
-          employee_count?: number | null
           id?: string
-          industry?: string | null
           name?: string
           settings?: Json | null
           slug?: string
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
-      owners: {
-        Row: {
-          auth_user_id: string
-          created_at: string | null
-          email: string
-          full_name: string
-          id: string
-          last_login_at: string | null
-          organization_id: string | null
-        }
-        Insert: {
-          auth_user_id: string
-          created_at?: string | null
-          email: string
-          full_name: string
-          id?: string
-          last_login_at?: string | null
-          organization_id?: string | null
-        }
-        Update: {
-          auth_user_id?: string
-          created_at?: string | null
-          email?: string
-          full_name?: string
-          id?: string
-          last_login_at?: string | null
-          organization_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "owners_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       pending_employees: {
         Row: {
-          device_fingerprint: string | null
-          email: string
+          device_fingerprint: string
+          email: string | null
           full_name: string
           id: string
-          organization_id: string | null
+          organization_id: string
           phone: string | null
           registered_at: string | null
-          registration_token: string | null
-          reviewed_at: string | null
+          registration_token: string
           status: string | null
         }
         Insert: {
-          device_fingerprint?: string | null
-          email: string
+          device_fingerprint: string
+          email?: string | null
           full_name: string
           id?: string
-          organization_id?: string | null
+          organization_id: string
           phone?: string | null
           registered_at?: string | null
-          registration_token?: string | null
-          reviewed_at?: string | null
+          registration_token: string
           status?: string | null
         }
         Update: {
-          device_fingerprint?: string | null
-          email?: string
+          device_fingerprint?: string
+          email?: string | null
           full_name?: string
           id?: string
-          organization_id?: string | null
+          organization_id?: string
           phone?: string | null
           registered_at?: string | null
-          registration_token?: string | null
-          reviewed_at?: string | null
+          registration_token?: string
           status?: string | null
         }
         Relationships: [
@@ -294,27 +240,24 @@ export type Database = {
           expires_at: string
           id: string
           is_active: boolean | null
-          organization_id: string | null
+          organization_id: string
           token: string
-          used_count: number | null
         }
         Insert: {
           created_at?: string | null
           expires_at: string
           id?: string
           is_active?: boolean | null
-          organization_id?: string | null
+          organization_id: string
           token: string
-          used_count?: number | null
         }
         Update: {
           created_at?: string | null
           expires_at?: string
           id?: string
           is_active?: boolean | null
-          organization_id?: string | null
+          organization_id?: string
           token?: string
-          used_count?: number | null
         }
         Relationships: [
           {
@@ -348,116 +291,116 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-  : never = never,
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
-  ? R
-  : never
+    ? R
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-    DefaultSchema["Views"])
-  ? (DefaultSchema["Tables"] &
-    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R
-    }
-  ? R
-  : never
-  : never
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-  | keyof DefaultSchema["Tables"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-    Insert: infer I
-  }
-  ? I
-  : never
+      Insert: infer I
+    }
+    ? I
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-    Insert: infer I
-  }
-  ? I
-  : never
-  : never
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-  | keyof DefaultSchema["Tables"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-    Update: infer U
-  }
-  ? U
-  : never
+      Update: infer U
+    }
+    ? U
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-    Update: infer U
-  }
-  ? U
-  : never
-  : never
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-  | keyof DefaultSchema["Enums"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-  : never
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-  | keyof DefaultSchema["CompositeTypes"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-  : never
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
 export const Constants = {
   public: {

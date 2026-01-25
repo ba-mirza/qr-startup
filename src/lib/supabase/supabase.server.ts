@@ -11,7 +11,7 @@ export function getSupabaseServerClient() {
     throw new Error('Supabase env variables are missing on server!')
   }
 
-  return createServerClient(
+  return createServerClient<Database>(
     url,
     key,
     {
@@ -29,25 +29,4 @@ export function getSupabaseServerClient() {
         },
       },
     });
-}
-
-export async function getSafeSession() {
-  const db = getSupabaseServerClient();
-
-  const {
-    data: { session },
-  } = await db.auth.getSession();
-  if (!session) {
-    return { session: null, user: null, supabase: null, error: 'No session found' };
-  }
-
-  const {
-    data: { user },
-    error: userError,
-  } = await db.auth.getUser();
-  if (userError) {
-    return { session, user: null, supabase: null, error: userError.message };
-  }
-
-  return { session, user, db, error: null };
 }

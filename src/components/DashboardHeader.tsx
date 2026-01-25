@@ -1,6 +1,5 @@
-import { Link, useNavigate } from '@tanstack/react-router'
-import { Building2, QrCode, Settings, LogOut, ChevronDown } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
+import { Link } from '@tanstack/react-router'
+import { Building2, ChevronDown, LogOut, QrCode } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,14 +11,6 @@ import {
 import { Button } from '@/components/ui/button'
 
 export default function DashboardHeader() {
-  const { user, signOut } = useAuth()
-  const navigate = useNavigate()
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate({ to: '/auth/login' })
-  }
-
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,20 +27,20 @@ export default function DashboardHeader() {
                 to="/dashboard/organizations"
                 className="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                 activeProps={{
-                  className: 'text-blue-700 underline'
+                  className: 'text-blue-700 bg-blue-50'
                 }}
               >
                 <div className="flex items-center space-x-2">
                   <Building2 className="h-4 w-4" />
-                  <span>Organizations</span>
+                  <span>Организация</span>
                 </div>
               </Link>
             </nav>
           </div>
 
           <div className="flex items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild className='py-6'>
+            {/*<DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2">
                   <div className="flex flex-col items-end">
                     <span className="text-sm font-medium text-gray-900">
@@ -66,21 +57,14 @@ export default function DashboardHeader() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/" className="flex items-center cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
+                <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign Out</span>
+                  <span>Выйти</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu>*/}
           </div>
         </div>
       </div>

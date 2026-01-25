@@ -11,28 +11,23 @@ import {
 import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_public/')({
-  component: App, loader: () => {
-    console.log('Loader executed')
-  },
-  beforeLoad: () => {
-    console.log('Before load executed')
-  },
+  component: App,
 })
 
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
-      <section className="bg-gradient-to-b from-blue-50 to-white py-20 px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-b from-red-50 to-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center p-2 bg-blue-100 rounded-full mb-8">
-            <QrCode className="w-6 h-6 text-blue-600 mr-2" />
-            <span className="text-blue-800 font-medium text-sm">
+          <div className="inline-flex items-center justify-center p-2 bg-red-100 rounded-full mb-8">
+            <QrCode className="w-6 h-6 text-red-600 mr-2" />
+            <span className="text-red-800 font-medium text-sm">
               Modern Attendance Tracking
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight mb-6">
             Track Attendance with <br />
-            <span className="text-blue-600">Simple QR Codes</span>
+            <span className="text-red-600">Simple QR Codes</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
             No expensive hardware. No facial recognition. Just a simple, secure,
@@ -123,7 +118,7 @@ function App() {
 
             <div className="text-center bg-gray-50">
               <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center mx-auto mb-6 border-4 border-white relative z-10">
-                <Users className="w-10 h-10 text-blue-600" />
+                <Users className="w-10 h-10 text-red-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 1. Create Organization
@@ -134,7 +129,7 @@ function App() {
             </div>
             <div className="text-center bg-gray-50">
               <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center mx-auto mb-6 border-4 border-white relative z-10">
-                <QrCode className="w-10 h-10 text-blue-600" />
+                <QrCode className="w-10 h-10 text-red-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 2. Generate Codes
@@ -145,7 +140,7 @@ function App() {
             </div>
             <div className="text-center bg-gray-50">
               <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center mx-auto mb-6 border-4 border-white relative z-10">
-                <Clock className="w-10 h-10 text-blue-600" />
+                <Clock className="w-10 h-10 text-red-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 3. Track Time
@@ -158,19 +153,19 @@ function App() {
         </div>
       </section>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-blue-600 text-white">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-red-50 text-black">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to streamline your attendance?
           </h2>
-          <p className="text-xl text-blue-100 mb-10">
+          <p className="text-xl text-red-600 mb-10">
             Join thousands of companies moving away from outdated punch cards
             and expensive biometrics.
           </p>
           <Link to="/">
             <Button
               size="lg"
-              className="bg-white text-blue-600 hover:bg-blue-50 border-transparent"
+              className="bg-white text-red-600 hover:bg-red-50 border-transparent"
             >
               Get Started for Free
             </Button>
@@ -182,10 +177,10 @@ function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <QrCode className="h-6 w-6 text-white" />
-            <span className="text-xl font-bold text-white">QR Attendance</span>
+            <span className="text-xl font-bold text-white">KasipQR</span>
           </div>
           <div className="text-sm">
-            &copy; {new Date().getFullYear()} QR Attendance. All rights
+            &copy; {new Date().getFullYear()} KasipQR. All rights
             reserved.
           </div>
         </div>

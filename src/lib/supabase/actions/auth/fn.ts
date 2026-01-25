@@ -1,34 +1,24 @@
-import { createServerFn } from '@tanstack/react-start'
-import { getSafeSession } from '../../supabase.server'
+import { createServerFn } from "@tanstack/react-start";
+import { loginSchema, registerSchema } from "./schema";
 
-export const ensureOwnerRecord = createServerFn({ method: 'POST' })
-  .handler(async () => {
-    const { user, db } = await getSafeSession()
-
-    if (!user) {
-      throw new Error('Unauthorized')
+export const registerNewAccountFn = createServerFn({ method: 'POST' })
+  .inputValidator(registerSchema)
+  .handler(async ({ data: payload }) => {
+    try {
+      console.log(payload)
+      return Promise.resolve(payload.fullName)
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : 'Failed to register a new account')
     }
+  })
 
-    const { data: existing } = await db
-      .from('owners')
-      .select('id')
-      .eq('auth_user_id', user.id)
-      .single()
-
-    if (existing) {
-      return { success: true, exists: true }
+export const signInFn = createServerFn({ method: 'POST' })
+  .inputValidator(loginSchema)
+  .handler(async ({ data: payload }) => {
+    try {
+      console.log(payload)
+      return Promise.resolve(payload.email)
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : 'Failed to sign in account')
     }
-
-    const { error } = await db
-      .from('owners')
-      .insert({
-        auth_user_id: user.id,
-        email: user.email!,
-        full_name: user.user_metadata?.full_name || user.email!.split('@')[0],
-        organization_id: null,
-      })
-
-    if (error) throw new Error(error.message)
-
-    return { success: true, exists: false }
   })
